@@ -6,8 +6,8 @@ class DatabaseHelper {
 
   DatabaseHelper._();
 
-  static const String databaseName = 'notes.db';
-  static const String tableName = 'notes';
+  static String databaseName = 'finance.db';
+  static String tableName = 'finance';
 
   Database? _database;
 
@@ -16,30 +16,54 @@ class DatabaseHelper {
   Future<Database?> initDatabase() async {
     final path = await getDatabasesPath();
     final dbPath = join(path, databaseName);
-    return await openDatabase(
-      dbPath,
-      version: 1,
-      onCreate: (db, version) {
-        String sql = '''
-      CREATE TABLE $tableName (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      amount INTEGER NOT NULL,
-      description TEXT NOT NULL,
-      category TEXT
-      )
-      ''';
-        db.execute(sql);
-      },
-    );
+
+    return await openDatabase(dbPath, version: 1, onCreate: (db, version) {
+      String sql = '''
+          CREATE TABLE $tableName(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          amount REAL NOT NULL,
+          isIncome INTEGER NOT NULL,
+          category TEXT 
+          )
+          ''';
+      db.execute(sql);
+    });
   }
 
-  Future<int> insertData() async {
+  Future<int> insertData(double amount, int isIncome, String category) async {
     final db = await database;
     String sql = '''
-    INSERT INTO $tableName (amount, description)
-    VALUES (10000000, 'Car');
+    INSERT INTO $tableName (amount, isIncome, category)
+    VALUES (?,?,?);
     ''';
-    final result = await db!.rawInsert(sql);
-    return result;
+    List args = [amount, isIncome, category];
+    return await db!.rawInsert(sql, args);
+  }
+
+  Future<List<Map<String, Object?>>> readData() async {
+    final db = await database;
+    String sql = '''
+    SELECT * FROM $tableName
+    ''';
+    return await db!.rawQuery(sql);
+  }
+
+  Future<int> updateData(
+      int id, double amount, int isIncome, String category) async {
+    final db = await database;
+    String sql = '''
+    UPDATE $tableName SET amount = ?, isIncome = ?, category = ? WHERE id = ?
+    ''';
+    List args = [amount, isIncome, category, id];
+    return await db!.rawUpdate(sql, args);
+  }
+
+  Future<int> deleteData(int id) async {
+    final db = await database;
+    String sql = '''
+    DELETE FROM $tableName WHERE id = ?
+    ''';
+    List args = [id];
+    return await db!.rawDelete(sql, args);
   }
 }
