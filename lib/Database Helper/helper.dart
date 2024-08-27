@@ -23,20 +23,21 @@ class DatabaseHelper {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           amount REAL NOT NULL,
           isIncome INTEGER NOT NULL,
-          category TEXT 
+          category TEXT,
+          img TEXT
           )
           ''';
       db.execute(sql);
     });
   }
 
-  Future<int> insertData(double amount, int isIncome, String category) async {
+  Future<int> insertData(double amount, int isIncome, String category,String img) async {
     final db = await database;
     String sql = '''
-    INSERT INTO $tableName (amount, isIncome, category)
-    VALUES (?,?,?);
+    INSERT INTO $tableName (amount, isIncome, category, img)
+    VALUES (?,?,?,?);
     ''';
-    List args = [amount, isIncome, category];
+    List args = [amount, isIncome, category,img];
     return await db!.rawInsert(sql, args);
   }
 
@@ -49,13 +50,22 @@ class DatabaseHelper {
   }
 
   Future<int> updateData(
-      int id, double amount, int isIncome, String category) async {
+      int id, double amount, int isIncome, String category,String img) async {
     final db = await database;
     String sql = '''
-    UPDATE $tableName SET amount = ?, isIncome = ?, category = ? WHERE id = ?
+    UPDATE $tableName SET amount = ?, isIncome = ?, category = ?, img = ? WHERE id = ?
     ''';
-    List args = [amount, isIncome, category, id];
+    List args = [amount, isIncome, category,img, id];
     return await db!.rawUpdate(sql, args);
+  }
+
+  Future<List<Map<String, Object?>>> readCatagoryWiseData(int isIncome)
+  async {
+    final db = await database;
+    String sql = '''
+    SELECT * FROM $tableName WHERE isIncome = ?  ''';
+    List args = [isIncome];
+    return await db!.rawQuery(sql,args);
   }
 
   Future<int> deleteData(int id) async {

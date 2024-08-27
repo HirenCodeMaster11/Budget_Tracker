@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../Controller/page1 controller.dart';
 
@@ -11,8 +14,14 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double h = MediaQuery.of(context).size.height;
-    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery
+        .of(context)
+        .size
+        .height;
+    double w = MediaQuery
+        .of(context)
+        .size
+        .width;
     return Scaffold(
       backgroundColor: Colors.grey.shade900,
       appBar: AppBar(
@@ -21,11 +30,11 @@ class HomePage extends StatelessWidget {
           'Budget Tracker',
           style: TextStyle(
               color: Colors.white,
-              fontSize: w * 0.05,
+              fontSize: w * 0.055,
               fontWeight: FontWeight.w500),
         ),
-        backgroundColor: Color(0xff1d1f21),
-        leading: Icon(Icons.menu, color: Colors.white),
+        backgroundColor: const Color(0xff1d1f21),
+        leading: const Icon(Icons.menu, color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.white),
@@ -36,129 +45,179 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Obx(
-        () => Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    height: h * 0.09,
-                    width: w * 0.42,
-                    decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Total Income',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: w * 0.05,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                            '${controller.totalIncome}',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: w * 0.05,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    height: h * 0.09,
-                    width: w * 0.42,
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Total Income',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: w * 0.05,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        Text(
-                            '${controller.totalExpense}',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: w * 0.05,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: controller.data.length,
-                itemBuilder: (context, index) => Card(
-                  color: controller.data[index]['isIncome'] == 1
-                      ? Colors.green
-                      : Colors.red,
-                  child: ListTile(
-                    leading: Text(
-                      controller.data[index]['id'].toString(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    title: Text(
-                      controller.data[index]['amount'].toString(),
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w500,color: Colors.white),
-                    ),
-                    subtitle: Text(
-                      controller.data[index]['category'],
-                      style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.white),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            _showUpdateDialog(context, index);
-                          },
-                          icon: const Icon(
-                            Icons.edit,
-                            color: Colors.white,
+            () =>
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          controller.getCatagoryWiseRecords(1);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          width: w * 0.32,
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Total Income',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: w * 0.05,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                '${controller.totalIncome}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: w * 0.06,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            controller
-                                .deleteRecord(controller.data[index]['id']);
-                          },
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.white,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          controller.getCatagoryWiseRecords(0);
+                        },
+                        child: Container(
+                          width: w * 0.3,
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Total Income',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: w * 0.05,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                '${controller.totalExpense}',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: w * 0.06,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          controller.getRecord();
+                        },
+                        child: Container(
+                          width: w * 0.3,
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Total Balance',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: w * 0.045,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                '${controller.totalIncome.value -
+                                    controller.totalExpense.value}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: w * 0.06,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
+                SizedBox(
+                  height: h * 0.05,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: controller.data.length,
+                    itemBuilder: (context, index) =>
+                        Card(
+                          color: controller.data[index]['isIncome'] == 1
+                              ? Colors.green
+                              : Colors.red,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: FileImage(File(controller
+                                  .data[index]['img'])),
+                            ),
+                            title: Text(
+                              controller.data[index]['amount'].toString(),
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white),
+                            ),
+                            subtitle: Text(
+                              controller.data[index]['category'],
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    _showUpdateDialog(context, index);
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    controller
+                                        .deleteRecord(
+                                        controller.data[index]['id']);
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _showAddDialog(context);
         },
-        backgroundColor: Color(0xff1d1f21),
+        backgroundColor: const Color(0xff1d1f21),
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -167,157 +226,199 @@ class HomePage extends StatelessWidget {
   void _showUpdateDialog(BuildContext context, int index) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          'Update details',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildTextFormField(
-                label: 'Amount',
-                controller: controller.txtAmount,
+      builder: (context) =>
+          AlertDialog(
+            title: const Text(
+              'Update details',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                       ImagePicker imagePicker = ImagePicker();
+                       controller.xFileImage.value = await imagePicker.pickImage(source: ImageSource.gallery);
+                       controller.pickImage();
+                      },
+                      child: Obx(
+                        () => CircleAvatar(
+                            radius: 32,
+                            backgroundImage: controller.fileImage.value != null
+                                ? FileImage(File(controller.fileImage.value!.path),) : null,
+                        ),
+                      ),
+                    ),
+                    buildTextFormField(
+                      label: 'Amount',
+                      controller: controller.txtAmount,
+                    ),
+                    const SizedBox(height: 10),
+                    buildTextFormField(
+                      label: 'Category',
+                      controller: controller.txtCategory,
+                    ),
+                    Obx(
+                          () =>
+                          SwitchListTile(
+                            activeTrackColor: Colors.green,
+                            title: const Text('Income',
+                                style:
+                                TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500)),
+                            value: controller.isIncome.value,
+                            onChanged: (value) {
+                              controller.setIsIncome(value);
+                            },
+                          ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              buildTextFormField(
-                label: 'Category',
-                controller: controller.txtCategory,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-              Obx(
-                () => SwitchListTile(
-                  activeTrackColor: Colors.green,
-                  title: const Text('Income',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  value: controller.isIncome.value,
-                  onChanged: (value) {
-                    controller.setIsIncome(value);
+              TextButton(
+                onPressed: () {
+                  bool response = formKey.currentState!.validate();
+                  if (response) {
+                    controller.updateRecord(
+                      controller.data[index]['id'],
+                      double.parse(controller.txtAmount.text),
+                      controller.isIncome.value ? 1 : 0,
+                      controller.txtCategory.text,
+                      controller.fileImage.value!.path,
+                    );
+                  }
+                  Get.back();
+                  controller.txtAmount.clear();
+                  controller.txtCategory.clear();
+                  controller.isIncome.value = false;
                   },
+                child: const Text(
+                  'OK',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
                 ),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              bool response = formKey.currentState!.validate();
-              if (response) {
-                controller.updateRecord(
-                  controller.data[index]['id'],
-                  double.parse(controller.txtAmount.text),
-                  controller.isIncome.value ? 1 : 0,
-                  controller.txtCategory.text,
-                );
-              }
-              Get.back();
-              controller.txtAmount.clear();
-              controller.txtCategory.clear();
-              controller.isIncome.value = false;
-            },
-            child: const Text(
-              'OK',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
   void _showAddDialog(BuildContext context) {
+    controller.fileImage.value = null;
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          'Add details',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              buildTextFormField(
-                label: 'Amount',
-                controller: controller.txtAmount,
+      builder: (context) =>
+          AlertDialog(
+            title: const Text(
+              'Add details',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            content: Form(
+              key: formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        ImagePicker imagePicker = ImagePicker();
+                        controller.xFileImage.value = await imagePicker.pickImage(source: ImageSource.gallery);
+                        controller.pickImage();
+                      },
+                      child: Obx(
+                            () => CircleAvatar(
+                          radius: 32,
+                          backgroundImage: controller.fileImage.value != null
+                              ? FileImage(File(controller.fileImage.value!.path),) : null,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    buildTextFormField(
+                      label: 'Amount',
+                      controller: controller.txtAmount,
+                    ),
+                    const SizedBox(height: 10),
+                    buildTextFormField(
+                      label: 'Category',
+                      controller: controller.txtCategory,
+                    ),
+                    Obx(
+                          () =>
+                          SwitchListTile(
+                            activeTrackColor: Colors.green,
+                            title: const Text('Income',
+                                style:
+                                TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500)),
+                            value: controller.isIncome.value,
+                            onChanged: (value) {
+                              controller.setIsIncome(value);
+                            },
+                          ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              buildTextFormField(
-                label: 'Category',
-                controller: controller.txtCategory,
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-              Obx(
-                () => SwitchListTile(
-                  activeTrackColor: Colors.green,
-                  title: const Text('Income',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                  value: controller.isIncome.value,
-                  onChanged: (value) {
-                    controller.setIsIncome(value);
-                  },
+              TextButton(
+                onPressed: () {
+                  bool response = formKey.currentState!.validate();
+                  if (response) {
+                    controller.initRecord(
+                      double.parse(controller.txtAmount.text),
+                      controller.isIncome.value ? 1 : 0,
+                      controller.txtCategory.text,
+                      controller.fileImage.value!.path,
+                    );
+                  }
+                  Get.back();
+                  controller.txtAmount.clear();
+                  controller.txtCategory.clear();
+                  controller.isIncome.value = false;
+                },
+                child: const Text(
+                  'OK',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
                 ),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back();
-            },
-            child: const Text(
-              'Cancel',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              bool response = formKey.currentState!.validate();
-              if (response) {
-                controller.initRecord(
-                  double.parse(controller.txtAmount.text),
-                  controller.isIncome.value ? 1 : 0,
-                  controller.txtCategory.text,
-                );
-              }
-              Get.back();
-              controller.txtAmount.clear();
-              controller.txtCategory.clear();
-              controller.isIncome.value = false;
-            },
-            child: const Text(
-              'OK',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -339,15 +440,15 @@ class HomePage extends StatelessWidget {
         labelText: label,
         labelStyle: const TextStyle(
             color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w400),
-        border:  OutlineInputBorder(
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.grey,
           ),
         ),
-        focusedBorder:  OutlineInputBorder(
+        focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             width: 2,
             color: Colors.grey,
           ),
