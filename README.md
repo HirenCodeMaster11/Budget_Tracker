@@ -48,10 +48,13 @@
 </div>
 
 
-
 <h2 align="center">4. Budget Tracker App With Id Photo </h2>
 
 <div align="center">
   <img height="550"  src="https://github.com/user-attachments/assets/ca8158bd-b338-4396-b080-819cb5e6a44a" />
   <img height="550"  src="https://github.com/user-attachments/assets/c78106e4-48ba-4fc6-9a7d-7d21d3e81b49" />
-</div>
+</div><br>
+
+## Description : 
+
+```The Flutter Budget Tracker app helps users manage their finances by tracking income, expenses, and savings in real-time. Users can categorize transactions, set budgets, and monitor spending against set limits. The app provides insightful visualizations, such as charts and graphs, to analyze financial trends. Seamless navigation and a clean UI make it easy to input data and review financial health. With secure data handling and customizable alerts, users can stay on top of their financial goals. The app is designed to be user-friendly, making budgeting simple and effective.```
